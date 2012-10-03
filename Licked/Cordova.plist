@@ -26,6 +26,8 @@
 	<array/>
 	<key>Plugins</key>
 	<dict>
+		<key>EmailComposer</key>
+		<string>EmailComposer</string>
 		<key>SaveImage</key>
 		<string>SaveImage</string>
 		<key>SMSComposer</key>

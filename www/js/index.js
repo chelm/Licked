@@ -59,6 +59,10 @@ var app = {
         app.hide('landing');
         app.show('photo_page');
         app.canvas.clear();
+        window.halo = fabric.Image.fromURL('img/halo.png', function(img) {
+          app.oImg = img.set({ left: 165, top: 85, angle: 5, active:true })
+          app.canvas.add(app.oImg);
+        });
         app.bg = fabric.Image.fromURL(imageData, function(img) {
           app.bgImg = img.set({ left: 160, top: 215, active:false, selectable:false});
           app.bgImg.scaleToWidth(330);
@@ -97,22 +101,42 @@ var app = {
     share: function(){
       var as = new ActionSheet();
       
-      as.create(null, ['Send in message', 'Save as image', 'Cancel'], function(buttonValue, buttonIndex) {
+      as.create(null, ['Send in email', 'Post to Facebook', 'Save as image', 'Cancel'], function(buttonValue, buttonIndex) {
         switch (arguments[1]) {
           case 0:
-            app.sendMessage();
+            app.canvas.deactivateAll();
+            cordova.exec(
+              null, 
+              null, 
+              "EmailComposer", 
+              "showEmailComposer", 
+              [{ body: '<img src="'+app.canvas.toDataURL("image/png")+'"/>', bIsHTML: true}]
+            );
             break;
           case 1:
+            app.sendFacebook();
+            break;
+          case 2:
             app.savePhoto();
             break;
         }
           //console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
-      }, {cancelButtonIndex: 2});
+      }, {cancelButtonIndex: 3});
+    },
+    sendFacebook: function() {
+      //var args;
+      //var sms = new SMSComposer();
+      //cordova.exec(null,null, 'SMSComposer','showSMSComposer',[{ body: app.imageData }]);
     },
     savePhoto: function(){
       app.canvas.deactivateAll();
       cordova.exec("SaveImage.saveImage", app.canvas.toDataURL("image/png").replace('data:image/png;base64,', ''));
       return true;
+    },
+    sendEmail: function() {
+      var args;
+      args.subject = 'Licked by an Angel'
+      cordova.exec(null, null, "EmailComposer", "showEmailComposer", [args]);
     },
     sendMessage: function() {
       var args;

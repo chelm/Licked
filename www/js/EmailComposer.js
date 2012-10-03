@@ -30,6 +30,7 @@ EmailComposer.prototype.showEmailComposer = function(subject,body,toRecipients,c
 		args.body = body;
 	if(bIsHTML)
 		args.bIsHTML = bIsHTML;
+	
 	cordova.exec(null, null, "EmailComposer", "showEmailComposer", [args]);
 }
 
